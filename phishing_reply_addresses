@@ -1,0 +1,35 @@
+# List Format
+# 
+# ADDRESS,TYPE,DATE
+# ADDRESS,TYPE,DATE
+# ADDRESS,TYPE,DATE
+# 
+# e.g.
+# 
+# accounthelpdesk@live.com,AC,20080327
+# windowsupgrades@microsoft.com,C,20080216
+# 
+# where:
+# 
+# ADDRESS: the full uid@domain email address that the phishing message is asking
+#          the user to reply to. An ADDRESS can only be listed once. Only one 
+#          ADDRESS can be listed per line.
+# 
+# TYPE: the way the ADDRESS was used. Multiple types can be listed 
+#       (e.g. 'ABCD' or 'AC' or 'B', etc)
+# 
+#   Possible Types:
+#
+#    A - The ADDRESS was used in the From header.
+#    B - The ADDRESS was used in the From header 
+#          and there was no Reply-To header.
+#    C - The content of the phishing message contained the ADDRESS.
+#    D - The content of the phishing message contained the ADDRESS
+#          and it was obfuscated. 
+# 
+# DATE: the date that the ADDRESS was last seen used as the reply address 
+#       a phishing campaign. Only one DATE can be listed per line.
+#
+# The list is in alphabetical order.
+#
+accountsupgrades.2008@live.com,A,20080312
