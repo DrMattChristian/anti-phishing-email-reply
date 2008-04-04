@@ -1,4 +1,4 @@
-#!/usr/bin/perl
+#!/usr/bin/perl -T
 # 
 # find_phishing_replies.pl, DESCRIPTION
 # 
@@ -21,7 +21,7 @@ use strict;
 
 # the local path to the addresses file
 # http://anti-phishing-email-reply.googlecode.com/svn/trunk/phishing_reply_addresses
-my $addresses_file = '/opt/mail/etc/phishing_reply_addresses';
+my $addresses_file = 'phishing_reply_addresses';
 
 # what to match in the log file prior to the address
 my $pre_re         = 'tcp_\w+\s+avs\w?\s+\w+\s\d+\s[^\s]+\srfc822;';
@@ -38,7 +38,9 @@ my @addresses = ();
 while ( <$addresses_fh> ) {
     next if m/^#/;
     my ($addr,$type,$date) = split /,/;
-    push @addresses, $addr;
+    # TODO: complete this regex
+    $addr =~ m/^([\w%+-]+@[\w.-]+\.\w{2,4})/;
+    push @addresses, $1;
 }
 close $addresses_fh;
 
