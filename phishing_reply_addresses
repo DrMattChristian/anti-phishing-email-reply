@@ -1,33 +1,33 @@
 # List Format
-# 
+#
 # ADDRESS,TYPE,DATE
 # ADDRESS,TYPE,DATE
 # ADDRESS,TYPE,DATE
-# 
+#
 # e.g.
-# 
+#
 # accounthelpdesk@live.com,AC,20080327
 # windowsupgrades@microsoft.com,C,20080216
-# 
+#
 # where:
-# 
+#
 # ADDRESS: the full uid@domain email address that the phishing message is asking
-#          the user to reply to. An ADDRESS can only be listed once. Only one 
+#          the user to reply to. An ADDRESS can only be listed once. Only one
 #          ADDRESS can be listed per line.
-# 
-# TYPE: the way the ADDRESS was used. Multiple types can be listed 
+#
+# TYPE: the way the ADDRESS was used. Multiple types can be listed
 #       (e.g. 'ABCD' or 'AC' or 'B', etc)
-# 
+#
 #   Possible Types:
 #
 #    A - The ADDRESS was used in the Reply-To header.
-#    B - The ADDRESS was used in the From header 
+#    B - The ADDRESS was used in the From header
 #          and there was no Reply-To header.
 #    C - The content of the phishing message contained the ADDRESS.
 #    D - The content of the phishing message contained the ADDRESS
-#          and it was obfuscated. 
-# 
-# DATE: the date that the ADDRESS was last seen used as the reply address 
+#          and it was obfuscated.
+#
+# DATE: the date that the ADDRESS was last seen used as the reply address
 #       a phishing campaign. Only one DATE can be listed per line.
 #
 # The list is in alphabetical order.
@@ -40,6 +40,7 @@ accountmanagement12@yahoo.com.hk,A,20080327
 accountreactivate@hotmail.co.uk,A,20080408
 account_u@hotmail.com,A,20080416
 account.upgrades@live.com,A,20080417
+accountsecuritys@live.com,A,20080416
 adminhelpdesk7@gmail.com,A,20080404
 adminhelpdesk8@gmail.com,A,20080416
 agentgracemark332@gmail.com,A,20080411
@@ -52,10 +53,12 @@ contact.customer@laum.com,A,20080416
 customers.unit@alum.com,A,20080416
 customerservice.domain@yahoo.com.hk,A,20080416
 customersservices2008@hotmail.com,A,20080328
-customerservice.accountalert@gmail.com,A,20080411 
+customerservice.accountalert@gmail.com,A,20080411
 customerupdate@live.com,A,20080416
 educationalwebmaster75@yahoo.com,A,20080331
+edu.webhelp@googlemail.com,A,20080419
 emzieske@clearwire.net,A,20080401
+garyscottchambers23@yahoo.co.uk,A,20080422
 help.deskgroup2@gmail.com,A,20080314
 helpdeskmailteam@gmail.com,A,20080401
 helpdesk@rushcomm.ca,B,20080325
@@ -63,19 +66,28 @@ helphouse2007@gmail.com,A,20080403
 info1ice.co.cr@gmail.com,A,20080416
 info.domain28@yahoo.com,A,20080416
 info.webupdate@googlemail.com,A,20080416
+ithelps@mail.org,A,20080416
+johnnymccloud@centurytel.net,A,20080422
 lindahills009@live.com,A,20080401
 mail.serverprotection@yahoo.com,A,20080416
 mailcenter@instruction.com,A,20080409
 planetservice@sify.com,A,20080414
-postmaster@hw06.dinaserver.com,B,20080327 
+postmaster@hw06.dinaserver.com,B,20080327
 robetcheng_07@yahoo.com.hk,A,20080416
+salbob@covad.net,A,20080421
+secureupdate@instructor.net,A,20080421
 serviceupgrade@hotmail.co.uk,A,20080305
 site_webmaster@y7mail.com,A,20080327
+spamalert1@yahoo.com,C,20080418
+spamalertoffice@gmail.com,AC,20080419
 stevesmith01@live.com,C,20080417
+stevesmith02@live.com,A,20080421
 support.team1@live.com,A,20080416
 support@customersservices.net,A,20080328
+support14@live.com,A,20080421
 supporta105@googlemail.com,A,20080420
 team.spprt@gmail.com,A,20080416
+uknalot4@yahoo.co.uk,A,20080416
 update@wolverines.com,A,20080408
 update_usmeducenter@live.com,A,20080401
 update_uga.educenter@live.com,A,20080416
@@ -86,6 +98,7 @@ ugamail_customercare@yahoo.com,A,20080416
 verification_team09@live.com,A,20080328
 verification_team11@live.com,A,20080411
 web.mail@dores.com,A,20080416
+webmailteam@mchsi.com,B,20080418
 webmastersite@y7mail.com,A,20080416
 web-support@live.com,A,20080417
 wischelpdesk@yahoo.com,A,20080129
