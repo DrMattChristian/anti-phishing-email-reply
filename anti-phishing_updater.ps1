@@ -51,6 +51,5 @@ $ou = "EDU Phishing"
 foreach ($i in $data)
 	{
 		new-mailcontact -name $i.address -externalemailaddress $i.address -organizationalunit $ou
-		add-distributionGroupMember -identity eduphishing -member $i.address
 	}
 get-mailcontact -organizationalunit "edu phishing" | set-mailcontact -customattribute1 $ou -customattribute2 $i.type -customattribute3 $i.date -HiddenFromAddressListsEnabled:$true
