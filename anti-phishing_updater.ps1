@@ -42,10 +42,14 @@
 #
 ####################################
 $clnt = new-object System.Net.WebClient
-$url = "http://anti-phishing-email-reply.googlecode.com/svn/trunk/phishing_reply_addresses.csv"
-$file = "c:\admin\anti-phishing.csv"
+$url = "http://anti-phishing-email-reply.googlecode.com/svn/trunk/phishing_reply_addresses"
+$file = "c:\admin\phishing_reply_addresses"
 $clnt.DownloadFile($url,$file)
-
+start-sleep -seconds 10
+$tempdata = get-content $file
+clear-content $file
+add-content -Path $file -Value 'Address,Type,Data'
+add-content -Path $file -value $tempdata[34..$tempdata.length]
 $data = import-csv $file
 $ou = "EDU Phishing"
 foreach ($i in $data)
