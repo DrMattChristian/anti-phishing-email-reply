@@ -72,7 +72,7 @@ do {
         }
     }
     unless ( $entry_parts[2] =~ m/^(\d{8})$/ ) {
-        die "invalid type [$entry_parts[2]]\n";
+        die "invalid date [$entry_parts[2]]\n";
     }
 
     my $tmp_list_file = $list_file.".tmp";
@@ -85,6 +85,7 @@ do {
     my $entry_to_add = join ',', @entry_parts;
     while ( <$list_fh> ) {
         my @current_entry = split ',', $_;
+        chomp(@current_entry);
         if ( m/^#/ ) {
             print $tmp_list_fh $_;
         }
