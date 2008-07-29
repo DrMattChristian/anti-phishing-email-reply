@@ -35,6 +35,7 @@ do {
         print "No entry.  Specify full or partial entry: ";
         $new_entry = <>;
         chomp $new_entry;
+        $new_entry =~ s/\r$//;
     }
 
     exit unless ( $new_entry );
@@ -43,6 +44,8 @@ do {
     unless ( $entry_parts[0] =~ m/^(.*@.*)$/ ) {
         die "invalid email address [$entry_parts[0]]\n";
     }
+    $entry_parts[0] =~ s/^\s+//g;
+    $entry_parts[0] =~ s/\s+$//g;
     $entry_parts[0] = lc $entry_parts[0];
 
     print "address is: $entry_parts[0]\n";
@@ -51,6 +54,7 @@ do {
         print "specify type: ";
         $entry_parts[1] = <>;
         chomp $entry_parts[1];
+        $entry_parts[1] =~ s/\r$//;
         if ( ! $entry_parts[1] ) {
             $entry_parts[1] = "A";
         }
@@ -63,6 +67,7 @@ do {
         print "specify date: ";
         $entry_parts[2] = <>;
         chomp $entry_parts[2];
+        $entry_parts[2] =~ s/\r$//;
         if ( ! $entry_parts[2] ) {
             my @time = localtime();
             $time[3] = sprintf("%02d",$time[3]);
@@ -84,6 +89,7 @@ do {
     my $entry_has_printed = 0;
     my $entry_to_add = join ',', @entry_parts;
     while ( <$list_fh> ) {
+        s/\r$//;
         my @current_entry = split ',', $_;
         chomp(@current_entry);
         if ( m/^#/ ) {
