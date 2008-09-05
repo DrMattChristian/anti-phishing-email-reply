@@ -38,8 +38,7 @@ my @addresses = ();
 while ( <$addresses_fh> ) {
     next if m/^#/;
     my ($addr,$type,$date) = split /,/;
-    # TODO: complete this regex
-    $addr =~ m/^([\w%+-]+@[\w.-]+\.\w{2,4})/;
+    $addr =~ m/^([\.\w%+-]+@[\w\.-]+\.\w{2,4})/;
     push @addresses, $1;
 }
 close $addresses_fh;
