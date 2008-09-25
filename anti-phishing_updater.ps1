@@ -41,6 +41,9 @@
 #	interval has passed.  It is possible to change the Microsoft default on the cache update (not recommended)
 #
 ####################################
+$error.clear()
+$erroractionpreference = "SilentlyContinue"
+add-pssnapin *exchange*
 $clnt = new-object System.Net.WebClient
 $url = "http://anti-phishing-email-reply.googlecode.com/svn/trunk/phishing_reply_addresses"
 $file = "c:\admin\phishing_reply_addresses"
@@ -54,6 +57,15 @@ $data = import-csv $file
 $ou = "EDU Phishing"
 foreach ($i in $data)
 	{
-		new-mailcontact -name $i.address -externalemailaddress $i.address -organizationalunit $ou
-		set-mailcontact -identity $i.address -customattribute1 $ou -customattribute2 $i.type -customattribute3 $i.date -HiddenFromAddressListsEnabled:$true
+		get-mailcontact -name $i.address
+			if(!$?)
+				{
+					$i.address
+				}
+			else
+				{
+					new-mailcontact -name $i.address -externalemailaddress $i.address -organizationalunit $ou
+					set-mailcontact -identity $i.address -customattribute1 $ou -customattribute2 $i.type -customattribute3 $i.date -HiddenFromAddressListsEnabled:$true
+					"Added " + $i.address
+				}
 	}
