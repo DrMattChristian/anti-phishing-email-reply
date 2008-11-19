@@ -21,24 +21,61 @@ use strict;
 use warnings;
 
 my $usage = "$0 user\@domain\nor\n$0 user\@domain,type,date\n";
-my $list_file = "phishing_reply_addresses";
-die "$list_file does not exist\n" unless ( -e $list_file );
-my @Command_Args = @ARGV;
-@ARGV = ();
+my $List_File = "phishing_reply_addresses";
+my %List = ();
 
-do {
-    my $new_entry = "";
-    if ( @Command_Args ) {
-        $new_entry = pop @Command_Args;
+# load addresses from file
+parse_list_file();
+
+if ( @ARGV ) {
+
+    # add new addresses from command line
+    for ( @ARGV ) {
+        add_to_list($_);
     }
+
+}
+else {
+
+    # prompt for addresses
+    while ( add_to_list() ) { }
+
+}
+
+# write out addresses to file
+write_list_file();
+
+
+# loads addresses from file into the hash
+sub parse_list_file {
+    die "$List_File does not exist\n" unless ( -e $List_File );
+    open my $list_fh, "<", $List_File or die "can't open $List_File: $!\n";
+    while ( <$list_fh> ) {
+        s/\r$//;
+        if ( m/^#/ ) {
+            $List{'header'} .= $_;
+            next;
+        }
+        chomp;
+        add_to_list($_);
+    }
+    close $list_fh;
+}
+
+# adds an address entry to the hash
+sub add_to_list {
+
+    my $new_entry = shift;
+    my $message = "";
+
     if ( ! $new_entry ) {
-        print "No entry.  Specify full or partial entry: ";
+        print "Specify full or partial entry: ";
         $new_entry = <>;
         chomp $new_entry;
         $new_entry =~ s/\r$//;
     }
 
-    exit unless ( $new_entry );
+    return unless ( $new_entry );
     my @entry_parts = split /,/, $new_entry;
 
     unless ( $entry_parts[0] =~ m/^(.*@.*)$/ ) {
@@ -47,8 +84,6 @@ do {
     $entry_parts[0] =~ s/^\s+//g;
     $entry_parts[0] =~ s/\s+$//g;
     $entry_parts[0] = lc $entry_parts[0];
-
-    print "address is: $entry_parts[0]\n";
 
     if ( ! $entry_parts[1] ) {
         print "specify type: ";
@@ -80,58 +115,53 @@ do {
         die "invalid date [$entry_parts[2]]\n";
     }
 
-    my $tmp_list_file = $list_file.".tmp";
+    if ( ! $List{'entries'}{$entry_parts[0]} ) {
+        $List{'entries'}{$entry_parts[0]}{'date'} = $entry_parts[2];
+        $List{'entries'}{$entry_parts[0]}{'types'}{$entry_parts[1]} = 1;
+    }
+    else {
+        if ( 
+            $List{'entries'}{$entry_parts[0]}{'types'}
+                and
+            ! $List{'entries'}{$entry_parts[0]}{'types'}{$entry_parts[1]}
+        ) {
+            $List{'entries'}{$entry_parts[0]}{'types'}{$entry_parts[1]} = 1;
+        }
+        if ( 
+            $List{'entries'}{$entry_parts[0]}{'date'}
+                and 
+            $List{'entries'}{$entry_parts[0]}{'date'} < $entry_parts[2] 
+        ) {
+            $List{'entries'}{$entry_parts[0]}{'date'} = $entry_parts[2];
+        }
+    }
+
+    return 1;
+}
+
+# writes addresses from hash to file
+sub write_list_file {
+    my $tmp_list_file = $List_File.".tmp";
     if ( -e $tmp_list_file ) {
         unlink $tmp_list_file or die "can't remove existing $tmp_list_file: $!\n";
     }
     open my $tmp_list_fh, ">", $tmp_list_file or die "can't open $tmp_list_file: $!\n";
-    open my $list_fh, "<", $list_file or die "can't open $list_file: $!\n";
-    my $entry_has_printed = 0;
-    my $entry_to_add = join ',', @entry_parts;
-    while ( <$list_fh> ) {
-        s/\r$//;
-        my @current_entry = split ',', $_;
-        chomp(@current_entry);
-        if ( m/^#/ ) {
-            print $tmp_list_fh $_;
-        }
-        elsif ( ! $entry_has_printed ) {
-            if ( ($entry_parts[0] cmp $current_entry[0]) == 0 ) {
-                if ( $current_entry[2] > $entry_parts[2] ) {
-                    $entry_parts[2] = $current_entry[2];
-                }
-                if ( ( $current_entry[1] cmp $entry_parts[1] ) != 0 ) {
-                    my @types = split //, $current_entry[1].$entry_parts[1];
-                    my %type_hash = ();
-                    foreach ( sort @types ) {
-                        $type_hash{$_} = 1;
-                    }
-                    $entry_parts[1] = join '', sort keys %type_hash;
-                }
-                $entry_to_add = join ',', @entry_parts;
-                print "entry exists. updating [$entry_to_add]\n";
-                print $tmp_list_fh $entry_to_add."\n";
-                $entry_has_printed++;
-            }
-            elsif ( ($entry_parts[0] cmp $current_entry[0]) == -1 ) {
-                print "adding new entry [$entry_to_add].\n";
-                print $tmp_list_fh $entry_to_add."\n";
-                print $tmp_list_fh $_;
-                $entry_has_printed++;
-            }
-            else {
-                print $tmp_list_fh $_;
-            }
-        }
-        else {
-            print $tmp_list_fh $_;
-        }
-    }
-    if ( ! $entry_has_printed ) {
+
+    print $tmp_list_fh $List{'header'};
+    foreach my $address ( sort keys %{$List{'entries'}} ) {
+        my $entry_to_add = join(
+            ',',
+            $address,
+            join(
+                '',
+                keys %{$List{'entries'}{$address}{'types'}}
+            ),
+            $List{'entries'}{$address}{'date'}
+        );
         print $tmp_list_fh $entry_to_add."\n";
     }
-    close $list_fh;
     close $tmp_list_fh;
 
-    rename $tmp_list_file, $list_file or die "can't rename $tmp_list_file to $list_file: $!\n";
-} while(1);
+    rename $tmp_list_file, $List_File or die "can't rename $tmp_list_file to $List_File: $!\n";
+}
+
