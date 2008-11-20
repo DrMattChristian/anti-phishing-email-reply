@@ -28,9 +28,11 @@ my %List = ();
 parse_list_file();
 
 if ( @ARGV ) {
+    my @input = @ARGV;
+    @ARGV = ();
 
     # add new addresses from command line
-    for ( @ARGV ) {
+    for ( @input ) {
         add_to_list($_);
     }
 
