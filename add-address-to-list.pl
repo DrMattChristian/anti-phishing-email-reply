@@ -117,7 +117,9 @@ sub add_to_list {
 
     if ( ! $List{'entries'}{$entry_parts[0]} ) {
         $List{'entries'}{$entry_parts[0]}{'date'} = $entry_parts[2];
-        $List{'entries'}{$entry_parts[0]}{'types'}{$entry_parts[1]} = 1;
+        for ( split //, $entry_parts[1] ) {
+            $List{'entries'}{$entry_parts[0]}{'types'}{$_} = 1;
+        }
     }
     else {
         if ( 
@@ -154,7 +156,7 @@ sub write_list_file {
             $address,
             join(
                 '',
-                keys %{$List{'entries'}{$address}{'types'}}
+                sort keys %{$List{'entries'}{$address}{'types'}}
             ),
             $List{'entries'}{$address}{'date'}
         );
