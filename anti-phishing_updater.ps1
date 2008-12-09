@@ -57,7 +57,7 @@ $data = import-csv $file
 $ou = "EDU Phishing"
 foreach ($i in $data)
 	{
-		get-mailcontact -name $i.address
+		get-mailcontact -identity $i.address
 			if(!$?)
 				{
 					$i.address
