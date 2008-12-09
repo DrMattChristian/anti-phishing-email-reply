@@ -57,15 +57,6 @@ $data = import-csv $file
 $ou = "EDU Phishing"
 foreach ($i in $data)
 	{
-		get-mailcontact -identity $i.address
-			if(!$?)
-				{
-					$i.address
-				}
-			else
-				{
-					new-mailcontact -name $i.address -externalemailaddress $i.address -organizationalunit $ou
-					set-mailcontact -identity $i.address -customattribute1 $ou -customattribute2 $i.type -customattribute3 $i.date -HiddenFromAddressListsEnabled:$true
-					"Added " + $i.address
-				}
+		new-mailcontact -name $i.address -externalemailaddress $i.address -organizationalunit $ou
+		set-mailcontact -identity $i.address -customattribute1 $ou -customattribute2 $i.type -customattribute3 $i.date -HiddenFromAddressListsEnabled:$true
 	}
