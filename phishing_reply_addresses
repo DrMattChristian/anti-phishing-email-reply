@@ -74,6 +74,7 @@ account.webuser@gmail.com,A,20081003
 account1@worker.com,A,20080424
 account@upgrade.com,B,20081013
 account@websupport.net,B,20080408
+account_email@ymail.com,A,20081231
 account_helpdesk@j-mail.info,A,20081211
 account_owner@msn.com,AC,20080818
 account_protectionunit@live.com,AC,20081029
@@ -1819,6 +1820,7 @@ webmailteam01@gmail.com,AC,20080922
 webmailteam1@mail2consultant.com,B,20081010
 webmailteam2@strompost.com,A,20080709
 webmailteam@inmail24.com,A,20080902
+webmailteam@mail2engineer.com,A,20081231
 webmailteam@mail2webmaster.com,A,20081115
 webmailteam@mchsi.com,B,20080418
 webmailteam@strompost.net,AB,20080709
