@@ -21,7 +21,8 @@ use strict;
 use warnings;
 
 my $usage = "$0 user\@domain\nor\n$0 user\@domain,type,date\n";
-my $List_File = "phishing_reply_addresses";
+my $List_File    = "phishing_reply_addresses";
+my $Cleared_File = "phishing_cleared_addresses";
 my %List = ();
 
 # load addresses from file
@@ -44,6 +45,9 @@ else {
 
 }
 
+# remove cleared addresses from file
+parse_cleared_file();
+
 # write out addresses to file
 write_list_file();
 
@@ -62,6 +66,21 @@ sub parse_list_file {
         add_to_list($_);
     }
     close $list_fh;
+}
+
+# loads addresses from file into the hash
+sub parse_cleared_file {
+    die "$Cleared_File does not exist\n" unless ( -e $Cleared_File );
+    open my $cleared_fh, "<", $Cleared_File or die "can't open $Cleared_File: $!\n";
+    while ( <$cleared_fh> ) {
+        s/\r$//;
+        if ( m/^#/ ) {
+            next;
+        }
+        chomp;
+        clear_from_list($_);
+    }
+    close $cleared_fh;
 }
 
 # adds an address entry to the hash
@@ -141,6 +160,34 @@ sub add_to_list {
     }
 
     return 1;
+}
+
+# removes an address entry from the hash
+sub clear_from_list {
+
+    my $new_entry = shift;
+    my $message = "";
+
+    return unless ( $new_entry );
+    my @entry_parts = split /,/, $new_entry;
+
+    unless ( $entry_parts[0] =~ m/^(.*@.*)$/ ) {
+        die "invalid email address [$entry_parts[0]]\n";
+    }
+    $entry_parts[0] =~ s/^\s+//g;
+    $entry_parts[0] =~ s/\s+$//g;
+    $entry_parts[0] = lc $entry_parts[0];
+
+    unless ( $entry_parts[1] =~ m/^(\d{8})$/ ) {
+        die "invalid date in cleared list [$entry_parts[1]]\n";
+    }
+
+    if ($List{'entries'}{$entry_parts[0]} 
+          and 
+            $List{'entries'}{$entry_parts[0]}{'date'} <= $entry_parts[1] ) {
+
+        delete $List{'entries'}{$entry_parts[0]};
+    }
 }
 
 # writes addresses from hash to file

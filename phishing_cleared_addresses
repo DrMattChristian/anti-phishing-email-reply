@@ -1,0 +1,26 @@
+#
+# phishing_cleared_addresses is the list of addresses that have been confirmed 
+# to have been cleared (secured).  
+#
+# The DATE is the date it was cleared.
+#
+# The add-address-to-list.pl script will check this file and remove any 
+# addresses that have a cleared date that is more recent than the listing date
+#
+# There is no type included, since the type is not relevant to the
+# determination of when the addresses are cleared.
+#
+# List Format:
+#
+# ADDRESS,DATE
+#
+# The list is in alphabetical order.
+#
+cmaynard@uoregon.edu,20081118
+j.armstrong@abertay.ac.uk,20081201
+k.l.ince@bham.ac.uk,20090204
+lspaith@uwhealth.org,20090114
+p.c.alcock@bham.ac.uk,20090121
+phills-meyer@uwhealth.org,20090114
+s.j.hordern@bham.ac.uk,20090120
+teschf@wcsu.edu,20090121
