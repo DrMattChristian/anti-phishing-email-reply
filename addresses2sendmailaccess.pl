@@ -1,78 +1,62 @@
 #!/usr/bin/perl
 
-# Written by rotaiv@gmail.com
+# Written by rotaiv@gmail.com (rotaiv@biapo.com)
 
-# http://anti-phishing-email-reply.googlecode.com/svn/trunk/phishing_reply_addresses
+use LWP::Simple;
+use strict;
 
-$webfile = "/root/data/phishing_reply_addresses";
-$aufile = "/root/data/phishing_exclude_au";
-$accessfile = "/etc/mail/access";
-$logfile = "/var/log/phishing.log";
+my $url = 'http://anti-phishing-email-reply.googlecode.com/svn/trunk/phishing_reply_addresses';
+my $exclude = "/root/data/phishing_exclude";
+my $accessfile = "/etc/mail/access";
+my $logfile = "/var/log/phishing.log";
+my $txtre = '^\s*(.+@[^,]+),([A-D]+),([0-9]{8})\s*$';
+my ($list, $txt, %web, $email);
+
 
 # Current date & time in yyyy-mm-dd hh:mm:ss format
-@dt=localtime(time);
-$datetime=sprintf("%.4d-%.2d-%.2d %.2d:%.2d:%.2d",
+my @dt=localtime(time);
+my $datetime=sprintf("%.4d-%.2d-%.2d %.2d:%.2d:%.2d",
  $dt[5]+1900,$dt[4]+1,$dt[3],$dt[2],$dt[1],$dt[0]);
-$cdate=sprintf("%.4d/%.2d/%.2d",$dt[5]+1900,$dt[4]+1,$dt[3]);
-$ctime=sprintf("%.2d:%.2d:%.2d",$dt[2],$dt[1],$dt[0]);
 
 # -----------------------------------------------------------------------------
-# Download phishing file
+# Read file from web if updated within the last hour
 # -----------------------------------------------------------------------------
 
-chdir "/root/data/";
-$oldweb = `md5sum $webfile`;
-unlink $webfile;
-system("wget -q http://anti-phishing-email-reply.googlecode.com/svn/trunk/phishing_reply_addresses");
-$newweb= `md5sum $webfile`;
+my ($type, $length, $mod) = head($url);
+exit unless time() - $mod > 3600;
 
-# Abort if file not updated
-if ($oldweb eq $newweb) {
- exit;
+my $list = get($url);
+
+die "Could not retrieve list!" unless defined $list;
+
+foreach $txt (split(/[\r\n]+/, $list)) {
+  next if $txt =~ /^\s*#/;
+  next unless ($txt =~ /$txtre/);
+  $web{$1}=1;
 }
 
-# Calculate hash for current access file
-my $oldaccess = `md5sum $accessfile`;
-
 # -----------------------------------------------------------------------------
-# Read web file
+# Read exclude file
 # -----------------------------------------------------------------------------
 
-open(WEBFILE,"<$webfile") || die "$!";
+open(INFILE,"<$exclude") || die "$!";
 
-while($txt=<WEBFILE>) {
-  # Ignore comments or lines without "@"
-  next if $txt =~ '#';
-  next if $txt !~ '@';
-  @rec = split ',', $txt;
-  $web{$rec[0]}=1;
-}
-close(WEBFILE);
-
-# -----------------------------------------------------------------------------
-# Read AU exclude file
-# -----------------------------------------------------------------------------
-
-open(AUFILE,"<$aufile") || die "$!";
-
-while($txt=<AUFILE>) {
+while($txt=<INFILE>) {
   # Ignore comments or lines without "@"
   next if $txt =~ '#';
   next if $txt !~ '@';
   chomp($txt);
-
   delete($web{$txt}) if exists($web{$txt});
-
 }
-close(AUFILE);
+close(INFILE);
 
 # -----------------------------------------------------------------------------
 # Read access file
 # -----------------------------------------------------------------------------
 
-open(ACCESSFILE,"<$accessfile") || die "$!";
+open(INFILE,"<$accessfile") || die "$!";
 
-while($txt=<ACCESSFILE>) {
+while($txt=<INFILE>) {
 
   # Ignore comments or lines without "@"
   next if $txt =~ '#';
@@ -88,7 +72,10 @@ while($txt=<ACCESSFILE>) {
     delete($web{$email});
   }
 }
-close(AUFILE);
+close(INFILE);
+
+# Abort if no new addresses left
+exit unless scalar keys %web;
 
 # -----------------------------------------------------------------------------
 # Add new addresses
@@ -97,21 +84,14 @@ close(AUFILE);
 open(ACCESSFILE,">>$accessfile") || die "$!";
 open(LOGFILE,">>$logfile") || die "$!";
 
-while(($email, $value) = each(%web)) {
+while(($email, $txt) = each(%web)) {
   printf ACCESSFILE ("%-45s ERROR:\"550 Blocked by AU ITS\"\n", $email);
   print LOGFILE "$datetime,W,$email\n";
 }
 close(ACCESSFILE);
 close(LOGFILE);
 
-# -----------------------------------------------------------------------------
-# Check if access file changed
-# -----------------------------------------------------------------------------
-$newaccess = `md5sum $accessfile`;
-if ( $oldaccess ne $newaccess) {
-  system("/sbin/service sendmail reload > /dev/null");
-}
-
+system("/sbin/service sendmail reload > /dev/null");
 
 # =============================================================================
 sub rtrim($)
