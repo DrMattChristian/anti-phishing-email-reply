@@ -13,7 +13,7 @@ address_file_url='http://anti-phishing-email-reply.googlecode.com/svn/trunk/phis
 delta=datetime.timedelta(days=30) # how far back do we care?
 reject_map_file='/etc/postfix/phishing-disallowed-recipients'
 postmap='/usr/sbin/postmap'
-addresses=3Dset()
+addresses=set()
 today=datetime.date.today()
 
 # first, make sure we can open the url
@@ -49,10 +49,10 @@ for line in response:
         day=int(datestamp[6:8])
         date=datetime.date(year, month, day)
         if (date > (today - delta)) :
-                      addresses.add(address)
+                       addresses.add(address)
 
 for entry in sorted(addresses):
-              closemapfile.write(entry + '\t REJECT\n')
+               mapfile.write(entry + '\t REJECT\n')
 mapfile.close()
 
 # call postmap on it
