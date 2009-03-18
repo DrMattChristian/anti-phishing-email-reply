@@ -1,7 +1,8 @@
 ####################################
-#	Exchange 2007 Powershell script to import/filter known Phishers
+#  Exchange 2007 Powershell script to import/filter known Phishers
+#  Version 1.2
 #
-#  About:
+# About:
 #	The best way I could think of to put the list of known phishers to use was to import the email addresses
 #	into Active Directory as mail contacts and add them to a dynamic distribution list that is then added
 #	to Transport Rules to filter the messages as desired.  My rules append to the subject line for identification then
@@ -38,25 +39,40 @@
 # Known Issues:
 #	HUB Transport servers cache the membership of all distribution lists for four hours.  Any updates done during
 #	this interval will not take effect unless the Exchange Transport service is manually restarted or the update
-#	interval has passed.  It is possible to change the Microsoft default on the cache update (not recommended)
+#	interval has passed.  It is possible to change the Microsoft default on the cache update (not recommended).
+#
+# Revision History:
+#	03-18-2009: added code to remove cleared addresses
 #
 ####################################
 $error.clear()
 $erroractionpreference = "SilentlyContinue"
-add-pssnapin *exchange*
-$clnt = new-object System.Net.WebClient
-$url = "http://anti-phishing-email-reply.googlecode.com/svn/trunk/phishing_reply_addresses"
-$file = "c:\admin\phishing_reply_addresses"
-$clnt.DownloadFile($url,$file)
-start-sleep -seconds 10
-$tempdata = get-content $file
-clear-content $file
-add-content -Path $file -Value 'Address,Type,Data'
-add-content -Path $file -value $tempdata[34..$tempdata.length]
-$data = import-csv $file
+Add-PSSnapin *exchange*
+$clnt = New-Object System.Net.WebClient
+$replyurl = "http://anti-phishing-email-reply.googlecode.com/svn/trunk/phishing_reply_addresses"
+$replyfile = "c:\admin\phishing_reply_addresses"
+$clearedurl = "http://anti-phishing-email-reply.googlecode.com/svn/trunk/phishing_cleared_addresses"
+$clearedfile = "c:\admin\phishing_cleared_addresses"
+$clnt.DownloadFile($replyurl,$replyfile)
+$clnt.DownloadFile($clearedurl,$clearedfile)
+Start-Sleep -seconds 10
+$tempreplyfile = Get-Content $replyfile
+$tempclearedfile = Get-Content $clearedfile
+Clear-Content $replyfile
+Clear-Content $clearedfile
+Add-Content -Path $replyfile -Value 'Address,Type,Date'
+Add-Content -Path $clearedfile -Value 'Address,Date'
+Add-Content -Path $replyfile -value $tempreplyfile[34..$tempreplyfile.length]
+Add-Content -Path $clearedfile -value $tempclearedfile[18..$tempclearedfile.length]
+$replydata = Import-Csv $replyfile
+$cleareddata = Import-Csv $clearedfile
 $ou = "EDU Phishing"
-foreach ($i in $data)
+foreach ($i in $replydata)
 	{
 		new-mailcontact -name $i.address -externalemailaddress $i.address -organizationalunit $ou
 		set-mailcontact -identity $i.address -customattribute1 $ou -customattribute2 $i.type -customattribute3 $i.date -HiddenFromAddressListsEnabled:$true
+	}
+foreach ($i in $cleareddata)
+	{
+		remove-mailcontact -identity $i.address -confirm:$false
 	}
