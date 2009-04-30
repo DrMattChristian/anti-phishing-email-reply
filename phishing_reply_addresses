@@ -11,26 +11,39 @@
 #
 # where:
 #
-# ADDRESS: the full uid@domain email address that the phishing message is asking
-#          the user to reply to. An ADDRESS can only be listed once. Only one
-#          ADDRESS can be listed per line.
+# ADDRESS: 
 #
-# TYPE: the way the ADDRESS was used. Multiple types can be listed
-#       (e.g. 'ABCD' or 'AC' or 'B', etc)
+#     The full uid@domain email address that the phishing message is asking
+#     the user to reply to. An ADDRESS can only be listed once. Only one
+#     ADDRESS can be listed per line.
 #
-#   Possible Types:
+# TYPE: 
 #
-#    A - The ADDRESS was used in the Reply-To header.
-#    B - The ADDRESS was used in the From header
-#          and there was no Reply-To header.
-#    C - The content of the phishing message contained the ADDRESS.
-#    D - The content of the phishing message contained the ADDRESS
-#          and it was obfuscated.
+#     The way the ADDRESS was used. Multiple values for TYPE can be listed
+#     (e.g. 'ABCD' or 'AC' or 'B', etc)
 #
-# DATE: the date that the ADDRESS was last seen used as the reply address
-#       a phishing campaign. Only one DATE can be listed per line.
+#     Possible values for TYPE:
+#   
+#         A: The ADDRESS was used in the Reply-To header.
 #
-# The list is in alphabetical order.
+#         B: The ADDRESS was used in the From header.
+#
+#         C: The content of the phishing message contained the ADDRESS.
+#
+#         D: The content of the phishing message contained the ADDRESS,
+#             and it was obfuscated.
+#
+#         E: The ADDRESS (usually in the From header) might receive replies
+#             but it was not intended to receive the replies.
+#
+#     Note: unless otherwise specified, in order for the ADDRESS to
+#           qualify for each TYPE, it must have been intended to
+#           receive the replies. 
+#
+# DATE: 
+#
+#     The date that the ADDRESS was last seen used as the reply address
+#     a phishing campaign. Only one DATE can be listed per line.
 #
 -helpdesk@live.com,A,20080822
 07971012711@orange.net,A,20080925
