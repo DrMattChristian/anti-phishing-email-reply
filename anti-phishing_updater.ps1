@@ -43,6 +43,7 @@
 #
 # Revision History:
 #	03-18-2009: added code to remove cleared addresses
+#	05-04-2009: changed starting line for phishing_reply_addresses due to new type E
 #
 ####################################
 $error.clear()
@@ -62,7 +63,7 @@ Clear-Content $replyfile
 Clear-Content $clearedfile
 Add-Content -Path $replyfile -Value 'Address,Type,Date'
 Add-Content -Path $clearedfile -Value 'Address,Date'
-Add-Content -Path $replyfile -value $tempreplyfile[34..$tempreplyfile.length]
+Add-Content -Path $replyfile -value $tempreplyfile[47..$tempreplyfile.length]
 Add-Content -Path $clearedfile -value $tempclearedfile[18..$tempclearedfile.length]
 $replydata = Import-Csv $replyfile
 $cleareddata = Import-Csv $clearedfile
