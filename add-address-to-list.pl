@@ -19,6 +19,8 @@
 
 use strict;
 use warnings;
+use POSIX qw(strftime);
+use Time::Local;
 
 my $usage = "$0 user\@domain\nor\n$0 user\@domain,type,date\n";
 my $List_File    = "phishing_reply_addresses";
@@ -125,14 +127,10 @@ sub add_to_list {
         chomp $entry_parts[2];
         $entry_parts[2] =~ s/\r$//;
         if ( ! $entry_parts[2] ) {
-            my @time = localtime();
-            $time[3] = sprintf("%02d",$time[3]);
-            $time[4] = sprintf("%02d",++$time[4]);
-            $time[5] += 1900;
-            $entry_parts[2] = $time[5] . $time[4] . $time[3];
+            $entry_parts[2] = strftime('%Y%m%d',localtime());
         }
     }
-    unless ( $entry_parts[2] =~ m/^(\d{8})$/ ) {
+    unless ( validate_date($entry_parts[2]) ) {
         die "invalid date [$entry_parts[2]]\n";
     }
 
@@ -157,6 +155,28 @@ sub add_to_list {
         ) {
             $List{'entries'}{$entry_parts[0]}{'date'} = $entry_parts[2];
         }
+    }
+
+    return 1;
+}
+
+# Ensures date is valid
+sub validate_date {
+
+    my($date) = @_;
+    my ($yyyy,$mm,$dd) = $date =~ m/^(\d{4})(\d{2})(\d{2})$/;
+
+    unless ($yyyy && $mm && $dd) {
+        # Must contain values for year, month, and day to be valid
+        return 0;
+    }
+    eval {
+        # timelocal() will die if values are out-of-range
+        timelocal(0,0,0,$dd, $mm - 1, $yyyy);
+    };
+    if( $@ ) {
+        warn "Date not validated: $@";
+        return 0;
     }
 
     return 1;
