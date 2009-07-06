@@ -1,0 +1,63 @@
+#
+# phishing_links is a list of generic forms used for e-mail account phishing
+#
+# The DATE is the last date a particular link was seen
+#
+# List Format:
+#
+# NORMALIZED URL,DATE
+#
+# Normalization consists of:
+# 1) removing "http[s]://" if present
+# 2) removing trailing "/" if present
+# 3) replacing HTML-encoded characters with ASCII equivalents where possible
+#
+# The list is in alphabetical order.
+#
+emailform.com/html/emailform.cfm?acct=ben111&list=3221508260,20090628
+emailform.com/html/html_code.cfm?acct=webmailservice&list=3371014070,20090704
+jotform.com/form/91391429176,20090523
+jotform.com/form/91593104454,20090610
+jotform.com/form/91634010086,20090613
+jotform.com/form/91723402314,20090623
+jotform.com/form/91730044272,20090623
+koros.wanssp.0lx.net/use/activation/form1.html,20090703
+koros.wanssp.0lx.net/use/denotedi6/form1.html,20090628
+marketiva.legal.0lx.net/use/info/form1.html,20090705
+outlook.microsoft.com.auzimet.net/outlook/setup.php?id=947,20090520
+tc-holz.de//images/b/verify.php,20090705
+thecraziestthing.com//verify.php,20090629
+webmailactivate2.wadjahosts.0lx.net/webmail/use/webmailform/form1.html,20090530
+webmailactivate.wadjahosts.0lx.net/webmail/use/andrew/form1.html,20090527
+webmailactivate.wadjahosts.0lx.net/webmail/use/oreva/form1.html,20090604
+webmailnet.wadjahosts.0lx.net/use/info/form1.html,20090627
+webmailnet.wadjahosts.0lx.net/use/tech/form1.html,20090701
+webmailnet.wadjahosts.0lx.net/use/webmailsw/form1.html,20090613
+www.ccltogo.org/verify.php,20090623
+www.emailform.com/html/emailform.cfm?acct=helpdesk&list=6554401070,20090702
+www.emailform.com/html/emailform.cfm?acct=updatemail&list=1322209260,20090630
+www.emailform.com/html/emailform.cfm?acct=accountupgrade&list=5333015070,20090706
+www.emailmeform.com/fid.php?formid=300407,20090601
+www.emailmeform.com/fid.php?formid=301207,20090505
+www.emailmeform.com/fid.php?formid=301556,20090506
+www.emailmeform.com/fid.php?formid=301705,20090506
+www.emailmeform.com/fid.php?formid=302490,20090507
+www.emailmeform.com/fid.php?formid=302545,20090507
+www.emailmeform.com/fid.php?formid=302559,20090507
+www.emailmeform.com/fid.php?formid=303757,20090509
+www.jotform.com/form/91392249161,20090523
+www.jotform.com/form/91431216150,20090525
+www.jotform.com/form/91470153155,20090528
+www.jotform.com/form/91471347175,20090528
+www.jotform.com/form/91484321103,20090530
+www.jotform.com/form/91543149204,20090604
+www.jotform.com/form/91581342136,20090609
+www.jotform.com/form/91591243133,20090609
+www.jotform.com/form/91624617120,20090612
+www.jotform.com/form/91651228146,20090615
+www.jotform.com/form/91673812147,20090617
+www.jotform.com/form/91804114761,20090701
+www.mailhelpdirect.org/_vti_ml_update/secure/update,20090704
+www.mailsupportdirect.org/verify/secure/mailhelp/update,20090706
+www.mymailhelp.org/_upd_vti_mail/secure/mail/update,20090602
+www.themaildesk.org/_vti_text/secure/mail/update/index.php,20090616
