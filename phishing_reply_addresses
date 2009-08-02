@@ -45,7 +45,6 @@
 #     The date that the ADDRESS was last seen used as the reply address
 #     a phishing campaign. Only one DATE can be listed per line.
 #
-" <noel123@netvigator.com>"@obav03.netvigator.com,A,20090802
 -helpdesk@live.com,A,20080822
 07971012711@orange.net,A,20080925
 0confirm.web@gmail.com,ABC,20090330
@@ -298,6 +297,7 @@ accountaccess0@live.com,A,20090608
 accountaccess0@mail2world.com,A,20090720
 accountaccess11@gmail.com,AC,20080822
 accountaccess13@hotmail.com,A,20090516
+accountaccess14@9.cn,A,20090802
 accountaccess14@hotmail.com,AC,20090529
 accountaccess591@gmail.com,A,20080902
 accountaccess@live.com,A,20090330
@@ -802,7 +802,7 @@ alertwindows@live.com,A,20090317
 alertyahoo@aol.com,A,20080725
 alessio.dammassa@cheapnet.it,B,20090702
 alex.ky@mountsinai.org,E,20090525
-alexeifamily@cooperation.net,AC,20090731
+alexeifamily@cooperation.net,AC,20090802
 alexlalois@yahoo.co.uk,A,20080709
 alexscottfamily@cooperation.net,AC,20090216
 alfredscottimf@live.com,A,20090314
@@ -899,6 +899,7 @@ ayoemman006@yahoo.com,A,20080812
 azizal_sheriff@administrativos.com,A,20090617
 b.atkins@bolton.ac.uk,E,20090723
 b.ghilardi1@nuigalway.ie,E,20090615
+b2b2cupgrade@live.com,A,20090802
 bakerronald@live.com,A,20090506
 ballyorneyvet@eircom.net,B,20090124
 bankss@cwu.edu,B,20090109
@@ -1874,6 +1875,7 @@ eduupdate1@live.com,A,20090706
 eduupgrade2009@live.com,A,20090330
 eduupgradecenter@live.com,A,20090428
 eduwebcenter@live.com,A,20080714
+eduwebi2009@yahoo.com,A,20090802
 eduwebmail@strompost.com,A,20080803
 eduwebmail@ymail.com,A,20090306
 eduwebmailaccount022@googlemail.com,A,20090727
@@ -2055,6 +2057,7 @@ erma_hines@subr.edu,E,20090719
 error4042008@live.com,A,20080911
 esimon@horizon.csueastbay.edu,B,20090411
 esteven48@gmail.com,A,20090727
+esupport.team_customercare@9.cn,A,20090802
 etechbizhk@netvigator.com,A,20090607
 etillma@stedwards.edu,E,20090613
 etovp@optonline.net,B,20090420
@@ -2127,6 +2130,7 @@ flynnm@chc.edu,B,20081218
 fmaldonadod@docentesupacifico.cl,AB,20090102
 fmjackson@eircom.net,B,20080624
 focusonshola@yahoo.com,A,20090113
+fond-hmt@yandex.ru,E,20090802
 fondation-1@hotmail.co.uk,A,20080714
 fondation.interloteriebillgates@isuisse.com,B,20090329
 fool@mail.prcinternet.net,A,20090130
@@ -3741,6 +3745,7 @@ nldomain.webmaster@gmail.com,C,20090528
 nleboyd@msm.edu,B,20080915
 nobody@s25.avahost.net,B,20081101
 nobody@sitios.sitiosdinamicos.net,B,20090710
+noel123@netvigator.com,A,20090802
 noelnagle@eircom.net,B,20090311
 nokia_sec_dept@live.com,A,20081015
 nokiaconectingpeople_claims2009@hotmail.co.uk,A,20090630
@@ -4367,6 +4372,7 @@ spamcare_desk@live.com,A,20080611
 spamcare_upgrading@windowslive.com,A,20080923
 spamcareupgrading@mail2web.com,BC,20081011
 spamcenterupgrade@live.com,A,20090309
+spamcontrols2@yahoo.com.hk,A,20090802
 spamprotecteddept@gmail.com,A,20080711
 spamprotions01@live.com,A,20090209
 sparkenbachs1@wscc.edu,E,20090610
@@ -5005,7 +5011,7 @@ tech.suportteams@info.lt,A,20080804
 tech.supp@consultant.com,A,20090130
 tech.supp@instruction.com,A,20090511
 tech.supports@info.lt,A,20080819
-tech1@gaiamail.com,A,20090728
+tech1@gaiamail.com,A,20090802
 tech1s3s@gmail.com,A,20090711
 tech2@gaiamail.com,A,20090710
 tech3@gaiamail.com,A,20090612
@@ -5546,6 +5552,7 @@ upgradeaccount6@gmail.com,A,20080827
 upgradeaccount982009@live.com,ABC,20090801
 upgradeaccount@mail2webmaster.com,A,20090130
 upgradeaccount@techie.com,C,20090416
+upgradeaccount@webmailcenter.com,A,20090802
 upgradeaccount_team@live.com,A,20080908
 upgradeaccountdpt.office01@googlemail.com,A,20081126
 upgradeaccounts1@live.com,A,20090325
@@ -6600,7 +6607,7 @@ webmailhelpdesk@ymail.com,AC,20090302
 webmailhelpdeskx@gmail.com,A,20090617
 webmailhelpline@mail2host.com,A,20090709
 webmailhelppdesk2009@mail2helpdesk.com,A,20090623
-webmailhelpservice@mail2world.com,A,20090721
+webmailhelpservice@mail2world.com,AC,20090802
 webmailhelpteam@rocketmail.com,A,20090306
 webmailitsupport@mail2webmaster.com,A,20090625
 webmaillteam@mail2webmaster.com,AB,20090220
@@ -7013,6 +7020,7 @@ webrepairer@googlemail.com,C,20090503
 webs-support@live.com,A,20080721
 webs-supportcenter@live.com,A,20080828
 websdm@live.com,C,20090430
+websec@administrativos.com,A,20090802
 webservice.service@gmail.com,AC,20090702
 webservice@abcrede.com.br,E,20090529
 webservice@mailier.com,A,20090617
@@ -7127,6 +7135,7 @@ webupgrader.tw@j-mail.info,A,20090322
 webupgradeservices@googlemail.com,A,20090712
 webupgradeteam0@8u8.com,A,20090609
 webupgradeteam33@gmail.com,A,20090514
+webupgrading@j-mail.info,AC,20090802
 webupgrading@live.com,A,20081121
 webupgrd@live.com,AC,20090513
 webuser@maintenance.org,B,20090505
