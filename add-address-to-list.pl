@@ -16,6 +16,8 @@
 # 
 # $Id:$
 # Jesse Thompson <jesse.thompson@doit.wisc.edu>
+#
+exit;
 
 use strict;
 use warnings;
