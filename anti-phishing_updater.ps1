@@ -30,7 +30,7 @@
 #		    Apply rule to messages
 #			from a member of EDU Phishing
 #			   and sent to users Inside the organization
-#		    prepend the subject with Message from known phisher: 
+#		    prepend the subject with Message from known phisher:
 #			   and redirect the message to Postmaster
 #	4. Create a folder on the server called "C:\Admin"
 #	5. Save this Powershell script as "C:\Admin\Anti-Phish.ps1"
@@ -50,9 +50,9 @@ $error.clear()
 $erroractionpreference = "SilentlyContinue"
 Add-PSSnapin *exchange*
 $clnt = New-Object System.Net.WebClient
-$replyurl = "http://anti-phishing-email-reply.googlecode.com/svn/trunk/phishing_reply_addresses"
+$replyurl = "https://svn.code.sf.net/p/aper/code/phishing_reply_addresses"
 $replyfile = "c:\admin\phishing_reply_addresses"
-$clearedurl = "http://anti-phishing-email-reply.googlecode.com/svn/trunk/phishing_cleared_addresses"
+$clearedurl = "https://svn.code.sf.net/p/aper/code/phishing_cleared_addresses"
 $clearedfile = "c:\admin\phishing_cleared_addresses"
 $clnt.DownloadFile($replyurl,$replyfile)
 $clnt.DownloadFile($clearedurl,$clearedfile)

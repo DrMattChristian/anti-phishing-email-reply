@@ -4,17 +4,16 @@
 
 import urllib2
 import sys
-import string
 import datetime
 import os
 
 # main
-address_file_url='http://anti-phishing-email-reply.googlecode.com/svn/trunk/phishing_reply_addresses' # see http://anti-phishing-email-reply.googlecode.com for more detail
-delta=datetime.timedelta(days=30) # how far back do we care?
-reject_map_file='/etc/postfix/phishing-disallowed-recipients'
-postmap='/usr/sbin/postmap'
-addresses=set()
-today=datetime.date.today()
+address_file_url = 'https://svn.code.sf.net/p/aper/code/phishing_reply_addresses'
+delta = datetime.timedelta(days=30)  # how far back do we care?
+reject_map_file = '/etc/postfix/phishing-disallowed-recipients'
+postmap = '/usr/sbin/postmap'
+addresses = set()
+today = datetime.date.today()
 
 # first, make sure we can open the url
 try:
@@ -27,32 +26,32 @@ except urllib2.URLError, e:
 
 # ok, try to make a backup file
 try:
-        backup=reject_map_file + '.bak'
+        backup = reject_map_file + '.bak'
         os.rename(reject_map_file, backup)
 except OSError, e:
         print e
 
 # open map file for writing
 try:
-        mapfile=open(reject_map_file, 'w')
-except  IOError, e:
+        mapfile = open(reject_map_file, 'w')
+except IOError, e:
         print e
         sys.exit()
 
 # iterate through the address file and build a postfix map
 for line in response:
         if line.startswith('#'):
-                continue
+            continue
         address, code, datestamp = line.split(',')
-        year=int(datestamp[0:4])
-        month=int(datestamp[4:6])
-        day=int(datestamp[6:8])
-        date=datetime.date(year, month, day)
-        if (date > (today - delta)) :
-                       addresses.add(address)
+        year = int(datestamp[0:4])
+        month = int(datestamp[4:6])
+        day = int(datestamp[6:8])
+        date = datetime.date(year, month, day)
+        if (date > (today - delta)):
+            addresses.add(address)
 
 for entry in sorted(addresses):
-               mapfile.write(entry + '\t REJECT\n')
+            mapfile.write(entry + '\t REJECT\n')
 mapfile.close()
 
 # call postmap on it

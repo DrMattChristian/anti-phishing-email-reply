@@ -28,24 +28,25 @@
 #
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, write to the Free Software
-# Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, 
+# Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301,
 # USA.
 #
 ###############################################################################
 #
 # INSTALLATION
 # ------------
-# 
-# * Obtain the phish file from http://code.google.com/p/anti-phishing-email-reply
+#
+# * Obtain the phish file from
+#   https://svn.code.sf.net/p/aper/code/phishing_reply_addresses
 #
 # * Add the IP of the system you're running this script from in the Barracuda
-#   under Basic/Administration/SNMP & API 
+#   under Basic/Administration/SNMP & API
 #
 # * Set the API password in the Barracuda
 #
 # * Obtain the anti-phishing list via SVN
 #
-# * Install the svn client on the system this is to run from 
+# * Install the svn client on the system this is to run from
 #
 # * Install the following Perl modules:
 #      - LWP
@@ -61,7 +62,7 @@
 # - Add SSL support for talking to the Barracuda
 # - Add checks of the returning XML from the Barracuda API calls
 # - Use the type and date from the phish list for the Barracuda comment
-# - Improve logging 
+# - Improve logging
 # - Deal with @bnblocks = @{$doc->{mta_acl_email_src_block_address}};
 # - Errors when there are no current blocks in the Barracuda
 # - Work on block_action check
@@ -69,7 +70,7 @@
 ###############################################################################
 #
 # CHANGELOG
-# 
+#
 # $Log: feed_barracuda_phish.pl,v $
 # Revision 1.10  2008/08/07 17:54:04  dyoung2
 #   * Added --no-svn option
@@ -130,8 +131,8 @@ use lib '/opt/gsb/idstools/lib';
 BEGIN {
 
     # modules we need to operate
-    my @MODs = 
-    (   
+    my @MODs =
+    (
         # "Standard" modules we use
         'FindBin',
         'Getopt::Long',
@@ -147,18 +148,18 @@ BEGIN {
 
         # "local" modules we need
         # (included with this distribution)
-    );  
+    );
 
     # check to see if the required modules are installed
     # and if so, load them up otherwise puke
     for my $mod (@MODs) {
-        if ( eval "require $mod" ) { 
+        if ( eval "require $mod" ) {
             $mod->import();
         } else {
             print "Module $mod not installed!\n" and exit(0);
-        }   
-    } 
-} 
+        }
+    }
+}
 ###############################################################################
 #                      P A C K A G E   V A R I A B L E S
 ###############################################################################
@@ -184,7 +185,7 @@ my $bn_line_num;
 ###############################################################################
 #                   C O M M A N D   L I N E   O P T I O N S
 ###############################################################################
-GetOptions(     
+GetOptions(
     "help"     => \$HELP,
     "debug"    => \$DEBUG,
     "version"  => sub { print_version(); },
@@ -208,7 +209,7 @@ unless ( $NOSVN) {
         logmsg("SVN update successful");
     } else {
         logmsg("FAILED to update SVN repository");
-        exit(0);    
+        exit(0);
     }
 }
 
@@ -236,7 +237,7 @@ if ( @curblocks = get_bn_blocks($bnsys, $bnpass) ) {
 ###
 my $differ = Array::Diff->diff(\@curblocks, \@newphish);
 foreach (@{$differ->added}) {
-    push(@missing_blocks, $_) 
+    push(@missing_blocks, $_);
 }
 my $diffc = scalar(@missing_blocks);
 logmsg("Updated phish file has $diffc new entries in it");
@@ -252,7 +253,7 @@ if ( $diffc == 0 ) {
 
 # Start the add at the count of the current blocks
 # The Barracuda starts numbering at 0, how convenient
-$bn_line_num = $num_curblocks; 
+$bn_line_num = $num_curblocks;
 foreach my $add (@missing_blocks) {
     logmsg("**************************************");
     logmsg("*** Working on $add");
@@ -357,7 +358,7 @@ sub get_bn_blocks {
     my @bnblocks;
     my $req;
     my $res;
-    my $xs1; 
+    my $xs1;
     my $doc;
     my $tempxml = "bn.xml";
 
@@ -514,7 +515,7 @@ sub get_bn_var_idx {
     my ($bnsys, $bnpass, $var, $val) = @_;
     my $req;
     my $res;
-    my $xs1; 
+    my $xs1;
     my $doc;
     my $tempxml = "varval.xml";
 
@@ -564,7 +565,7 @@ sub logmsg {
     } elsif ( $#_ == 1 ) {  # got 2, they want the message somewhere else
         $fh = $_[0];
         $message = $_[1];
-    }   
+    }
 
     my $n = strftime "%Y-%m-%d %H:%M:%S", localtime(time());
     print $fh "[$n] $package(): $message\n";
@@ -581,7 +582,7 @@ sub logmsg {
 # RETURN      : True
 # NOTES       : Set a package level variable DEBUG to enable/disable these
 ###############################################################################
-sub debug { 
+sub debug {
 
     my $message;
     my $fh;
@@ -593,15 +594,15 @@ sub debug {
     } elsif ( $#_ == 1 ) {  # got 2, they want the message somewhere else
         $fh = $_[0];
         $message = $_[1];
-    }   
+    }
 
-    if ( $main::DEBUG ) { 
+    if ( $main::DEBUG ) {
         logmsg($fh, "DEBUG: $message");
-        return(1); 
+        return(1);
     } else {
         return(1);
-    }   
-} 
+    }
+}
 
 
 ###############################################################################
@@ -627,7 +628,7 @@ feed_barracuda_phish.pl - Feed new phish to a Barracuda
 
 =head1 SYNOPSIS
 
-feed_barracuda_phish.pl [options] 
+feed_barracuda_phish.pl [options]
 
     options:
 

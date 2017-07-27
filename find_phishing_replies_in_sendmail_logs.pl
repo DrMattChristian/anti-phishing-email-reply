@@ -1,15 +1,16 @@
-#!/usr/bin/perl -T
-# 
+#!/usr/bin/perl
+#
 # find_phishing_replies_in_sendmail_logs.pl
-# code borrowed heavily from 
-# http://anti-phishing-email-reply.googlecode.com/svn/trunk/find_phishing_replies.pl
-# 
+# code borrowed heavily from find_phishing_replies.pl
+#
 # This will read sendmail logs from stdin and look for email sent to known phishers.
 
 use strict;
-use Sys::Syslog;
+use warnings;
 
+use Sys::Syslog;
 use Getopt::Long;
+
 my $help=0;
 my $syslog=0;
 my $list=0;
@@ -32,7 +33,7 @@ if ($help) {
 }
 
 # the local path to the addresses file
-# http://anti-phishing-email-reply.googlecode.com/svn/trunk/phishing_reply_addresses
+# https://svn.code.sf.net/p/aper/code/phishing_reply_addresses
 my $addresses_file = 'phishing_reply_addresses';
 
 my %badguys;	#list of badguy email addresses

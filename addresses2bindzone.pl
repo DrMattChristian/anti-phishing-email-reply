@@ -2,7 +2,7 @@
 #
 # build a bind zone file for phishing e-mail reply-to addresses
 # Matthew Newton 2008-03-28
-# 
+#
 # Debian packages required: libnet-dns-perl libwww-perl
 #
 # How to use:
@@ -19,7 +19,7 @@ use strict;
 
 my $zone = 'phish-reply.zone.example';
 
-my $url = 'http://anti-phishing-email-reply.googlecode.com/svn/trunk/phishing_reply_addresses';
+my $url = 'https://svn.code.sf.net/p/aper/code/phishing_reply_addresses';
 my $linere = '^\s*(.+@[^,]+),([A-D]+),([0-9]{8})\s*$';
 
 my $list = get($url);

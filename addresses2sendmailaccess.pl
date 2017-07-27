@@ -5,12 +5,12 @@
 use LWP::Simple;
 use strict;
 
-my $url = 'http://anti-phishing-email-reply.googlecode.com/svn/trunk/phishing_reply_addresses';
+my $url = 'https://svn.code.sf.net/p/aper/code/phishing_reply_addresses';
 my $exclude = "/root/data/phishing_exclude";
 my $accessfile = "/etc/mail/access";
 my $logfile = "/var/log/phishing.log";
 my $txtre = '^\s*(.+@[^,]+),([A-D]+),([0-9]{8})\s*$';
-my ($list, $txt, %web, $email);
+my ($txt, %web, $email);
 
 
 # Current date & time in yyyy-mm-dd hh:mm:ss format
@@ -94,7 +94,7 @@ close(LOGFILE);
 system("/sbin/service sendmail reload > /dev/null");
 
 # =============================================================================
-sub rtrim($)
+sub rtrim
 # =============================================================================
 {
   my $string = shift;

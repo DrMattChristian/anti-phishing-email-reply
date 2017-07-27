@@ -1,26 +1,27 @@
-#!/usr/bin/perl -T
-# 
+#!/usr/bin/perl
+#
 # find_phishing_replies.pl, DESCRIPTION
-# 
+#
 # Copyright (C) 2008 Jesse Thompson
-# 
+#
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
 # as published by the Free Software Foundation; either version 2
 # of the License, or (at your option) any later version.
-# 
+#
 # This program is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 # GNU General Public License for more details.
-# 
+#
 # $Id: find_phishing_replies.pl,v 1.2 2008/03/28 22:29:31 zjt Exp $
 # Jesse Thompson <jesse.thompson@doit.wisc.edu>
 
 use strict;
+use warnings;
 
 # the local path to the addresses file
-# http://anti-phishing-email-reply.googlecode.com/svn/trunk/phishing_reply_addresses
+# https://svn.code.sf.net/p/aper/code/phishing_reply_addresses
 my $addresses_file = 'phishing_reply_addresses';
 
 # what to match in the log file prior to the address

@@ -1,25 +1,26 @@
 #!/usr/bin/python
 #************************************************************************ #
-# phish_add.py
+# addresses2postfixmap_trap.py
 # 7/9/2008; tmg
 # 7/10/2008; tmg
 # 7/31/2008; zhs
 # 8/5/2008; tmg
 # 8/21/2008; tmg
 #************************************************************************ #
-# 
+#
 '''phish_add -- Reads email addresses or files of email addresses and adds
 them to the virtual domain file on the TAMU relays, in order to trap replies
-to those addresses that pass through the relays.  
+to those addresses that pass through the relays.
 
-Can parse the community file at: 
-http://anti-phishing-email-reply.googlecode.com/svn/trunk/phishing_reply_addresses
+Can parse the community file at:
+https://svn.code.sf.net/p/aper/code/phishing_reply_addresses
 '''
 import commands
 import getopt
 import os
 import re
 import urllib
+
 
 def output_read(fname):
     wx_l = []
@@ -33,6 +34,7 @@ def output_read(fname):
             wx_l.append(cur_addr)
 
     return wx_l
+
 
 def source_read(fname, verbose):
     wx_l = []
@@ -59,6 +61,7 @@ def source_read(fname, verbose):
 
     return wx_l
 
+
 def regex_write(new_l, output_file, verbose):
     # An address for quarantining suspect senders; Could just as easily "DISCARD"
     #  or "REJECT"
@@ -68,11 +71,11 @@ def regex_write(new_l, output_file, verbose):
         print "Building header_check file"
     for address in new_l:
         wx_l.append(wx_str % (address))
-        
+
     try:
         if verbose:
             print "Writing phisher header_check file"
-        fd=open(output_file, 'w')
+        fd = open(output_file, 'w')
         for line in wx_l:
             fd.writelines(line)
         fd.close()
@@ -81,8 +84,9 @@ def regex_write(new_l, output_file, verbose):
         print "Couldn't write regex!"
         print err
         results = False
-        
+
     return results
+
 
 def addr_merge(dest_l, new_l, verbose):
     tmp_l = dest_l[:]
@@ -97,6 +101,7 @@ def addr_merge(dest_l, new_l, verbose):
     tmp_l.sort()
 
     return tmp_l
+
 
 def addr_write(f_name, addr_l):
     try:
@@ -118,6 +123,7 @@ def addr_write(f_name, addr_l):
 
     return True
 
+
 def main(new_addr, verbose, is_file=False, OUTPUT=None):
     if not OUTPUT:
         OUTPUT = '/etc/postfix/virtual_trap'
@@ -128,18 +134,18 @@ def main(new_addr, verbose, is_file=False, OUTPUT=None):
 
     if is_file:
         if new_addr[:4] == 'http' or os.path.isfile(new_addr):
-            new_addr_l = source_read(new_addr,verbose)
+            new_addr_l = source_read(new_addr, verbose)
         else:
             print "Couldn't find input file %s" % (new_addr)
             os.sys.exit(1)
     else:
-        new_addr_l = [ new_addr.split(',')[0] ]
+        new_addr_l = [new_addr.split(',')[0]]
 
     new_addr_l = addr_merge(cur_addr_l, new_addr_l, verbose)
     len_2 = len(new_addr_l)
 
     if len_1 == len_2:
-        if verbose :
+        if verbose:
             print "No changes to the address list. Exiting now."
         return 0
     else:
@@ -150,7 +156,7 @@ def main(new_addr, verbose, is_file=False, OUTPUT=None):
                 print output
             else:
                 print "Updated %s" % (OUTPUT)
-            #TAMU mail is hosted in a load-balanced cluster. "config_sync.py" sync's 
+            #TAMU mail is hosted in a load-balanced cluster. "config_sync.py" sync's
             # configuration files across the cluster.
             #status, output = commands.getstatusoutput('/usr/local/sbin/config_sync.py %s' % (OUTPUT))
             #if status != 0:
@@ -160,7 +166,7 @@ def main(new_addr, verbose, is_file=False, OUTPUT=None):
 
             regex_res = regex_write(new_addr_l, REGEX_OUT, verbose)
             if regex_res:
-                # TAMU mail is hosted in a load-balanced cluster. "config_sync.py" sync's 
+                # TAMU mail is hosted in a load-balanced cluster. "config_sync.py" sync's
                 #  configuration files across the cluster.
                 #status, output = commands.getstatusoutput('/usr/local/sbin/config_sync.py %s' % (REGEX_OUT))
                 #if status != 0:
@@ -180,9 +186,9 @@ if __name__ == '__main__':
 
     Updates addresses in a virtual maps file, then synch's the new file between
     mail relays.
-    Specifiy an address file of 'remote' to fetch the current list from googlecode.'''
+    Specify an address file of 'remote' to fetch the current list from SF SVN.'''
 
-    remote_url = 'http://anti-phishing-email-reply.googlecode.com/svn/trunk/phishing_reply_addresses'
+    remote_url = 'https://svn.code.sf.net/p/aper/code/phishing_reply_addresses'
 
     if len(os.sys.argv) < 2:
         print usage
@@ -190,7 +196,7 @@ if __name__ == '__main__':
     else:
         try:
             optlist, args = getopt.getopt(os.sys.argv[1:], 'f:a:o:v', ['file-name', 'address',
-                                                                'output-file', 'verbose'])
+                                                                       'output-file', 'verbose'])
         except getopt.GetoptError, err:
             print err
             print usage

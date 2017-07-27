@@ -2,15 +2,15 @@
 ##################################################################
 # Copyright (C) 2008 - Jon Agland			    	 #
 #								 #
-# This program is free software; you can redistribute it and/or  #        
-# modify it under the terms of the GNU General Public License    #        
-# as published by the Free Software Foundation; either version 2 #        
-# of the License, or (at your option) any later version.         #        
+# This program is free software; you can redistribute it and/or  #
+# modify it under the terms of the GNU General Public License    #
+# as published by the Free Software Foundation; either version 2 #
+# of the License, or (at your option) any later version.         #
 #								 #
-# This program is distributed in the hope that it will be useful,#        
-# but WITHOUT ANY WARRANTY; without even the implied warranty of #        
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the  #        
-# GNU General Public License for more details.                   #         
+# This program is distributed in the hope that it will be useful,#
+# but WITHOUT ANY WARRANTY; without even the implied warranty of #
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the  #
+# GNU General Public License for more details.                   #
 ##################################################################
 # ---------------------------------------------------------------
 # IMPORTANT NOTE: This version has *not* been extensively tested.
@@ -18,9 +18,8 @@
 # Name: sa-phish-gen
 # Version: 1.0
 # Description: This script (sa-phish-gen) is intended to parse the list from
-# the anti-phishinge-email-reply project into a SpamAssassin config file (.cf)
-# See http://code.google.com/p/anti-phishing-email-reply/
-# Usage: ./sa-phish-gen <filename>  
+# the anti-phishing-email-reply project into a SpamAssassin config file (.cf)
+# Usage: ./sa-phish-gen <filename>
 # Example usage:./sa-phish-gen phishing_reply_addresses > sa-phish.cf
 
 ###################################################################
@@ -45,9 +44,9 @@ createreplytotest() {
 	# This should deal with those with a Reply-To or other header
 	# containing the listed e-mail address
 	# Results containing the Type A
-	echo "header SA_PHISH_GEN_A_$value reply-to =~ /$saaddr/i" 
+	echo "header SA_PHISH_GEN_A_$value reply-to =~ /$saaddr/i"
 	echo "score SA_PHISH_GEN_A_$value $score"
-	echo "describe SA_PHISH_GEN_A_$value $addr is listed in http://code.google.com/p/anti-phishing-email-reply" 
+	echo "describe SA_PHISH_GEN_A_$value $addr is listed in anti-phishing-email-reply"
         }
 
 createfromtest() {
@@ -55,9 +54,9 @@ createfromtest() {
        # This should deal with those with a From header
        # containing the listed e-mail address
        # Results containing the Type B
-	echo "header SA_PHISH_GEN_B_$value From =~ /$saaddr/i" 
-	echo "score SA_PHISH_GEN_B_$value $score" 
-	echo "describe SA_PHISH_GEN_B_$value $addr is listed in http://code.google.com/p/anti-phishing-email-reply" 
+	echo "header SA_PHISH_GEN_B_$value From =~ /$saaddr/i"
+	echo "score SA_PHISH_GEN_B_$value $score"
+	echo "describe SA_PHISH_GEN_B_$value $addr is listed in anti-phishing-email-reply"
         }
 
 createbodytest() {
@@ -65,9 +64,9 @@ createbodytest() {
        # This should deal with those with the content/body
        # containing the list e-mail address
        # Results containing the Type C
-       echo "body SA_PHISH_GEN_C_$value /\b$saaddr\b/i" 
-       echo "score SA_PHISH_GEN_C_$value $score" 
-       echo "describe SA_PHISH_GEN_C_$value $addr is listed in http://code.google.com/p/anti-phishing-email-reply" 
+       echo "body SA_PHISH_GEN_C_$value /\b$saaddr\b/i"
+       echo "score SA_PHISH_GEN_C_$value $score"
+       echo "describe SA_PHISH_GEN_C_$value $addr is listed in anti-phishing-email-reply"
         }
 # This function uses the Last Seen date to determine a score.
 datescorer() {
@@ -119,7 +118,7 @@ while read line
 do
 	# 2nd Column - Type
 	commentcheck=`echo $line | cut -b1`;
-	if [ "$commentcheck" != "#" ] 
+	if [ "$commentcheck" != "#" ]
 	then
 	# Loop count because we don't need to count comments! :)
 	value=`expr $value + 1`;
@@ -180,6 +179,4 @@ do
         esac
 	fi
 done
-
-
 

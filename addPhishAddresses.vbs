@@ -16,7 +16,7 @@ Groups,DC=fairmontstate,DC=edu"
 
 ' Website to get phish addresses from
 sPhishResource =
-"http://anti-phishing-email-reply.googlecode.com/svn/trunk/phishing_reply_addresses"
+"https://svn.code.sf.net/p/aper/code/phishing_reply_addresses"
 
 
 ' ****************************************************************************************************
