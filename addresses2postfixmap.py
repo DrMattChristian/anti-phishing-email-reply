@@ -1,60 +1,70 @@
 #!/usr/bin/python
-# open the phishing reply addresses file, generate a disallowed recipient hash
-# from it
+""" Download the phishing reply addresses file, then
+generate a Postfix phishing disallowed recipients hash map. """
 
-import urllib2
-import sys
-import datetime
-import os
+from __future__ import absolute_import, print_function
+from datetime import datetime, timedelta
+from os import rename, system
+try:  # Python 3 and newer only
+    from urllib.error import URLError
+    from urllib.request import Request, urlopen
+except ImportError:  # Python 2.7 and older
+    from urllib2 import Request, urlopen, URLError
 
 # main
-address_file_url = 'https://svn.code.sf.net/p/aper/code/phishing_reply_addresses'
-delta = datetime.timedelta(days=30)  # how far back do we care?
-reject_map_file = '/etc/postfix/phishing-disallowed-recipients'
-postmap = '/usr/sbin/postmap'
-addresses = set()
-today = datetime.date.today()
+ADDRESSES_URL = 'https://svn.code.sf.net/p/aper/code/phishing_reply_addresses'
+#REJECT_MAP_FILE = './phishing_disallowed_recipients'
+REJECT_MAP_FILE = '/etc/postfix/phishing_disallowed_recipients'
+POSTMAP = '/usr/sbin/postmap'
+ADDRESSES = set()
+# how far back do we care?
+CUTOFF = (datetime.today() - timedelta(days=30)).date()
 
 # first, make sure we can open the url
 try:
-        req = urllib2.Request(address_file_url)
-        response = urllib2.urlopen(req)
-except urllib2.URLError, e:
-        print 'failed to open url ', address_file_url
-        print 'reason: ', e
-        sys.exit()
+    REQUEST = Request(ADDRESSES_URL)
+    RESPONSE = urlopen(REQUEST)
+except URLError as err:
+    print('failed to open url ', ADDRESSES_URL)
+    print('reason: ', err)
+    exit()
 
-# ok, try to make a backup file
+# ok, try to make a BACKUP file
 try:
-        backup = reject_map_file + '.bak'
-        os.rename(reject_map_file, backup)
-except OSError, e:
-        print e
+    BACKUP = REJECT_MAP_FILE + '.bak'
+    rename(REJECT_MAP_FILE, BACKUP)
+except OSError as err:
+    print(err)
 
-# open map file for writing
+# open eap file for writing
 try:
-        mapfile = open(reject_map_file, 'w')
-except IOError, e:
-        print e
-        sys.exit()
+    MAPFILE = open(REJECT_MAP_FILE, 'wb')
+except IOError as err:
+    print(err)
+    exit()
 
-# iterate through the address file and build a postfix map
-for line in response:
-        if line.startswith('#'):
-            continue
-        address, code, datestamp = line.split(',')
-        year = int(datestamp[0:4])
-        month = int(datestamp[4:6])
-        day = int(datestamp[6:8])
-        date = datetime.date(year, month, day)
-        if (date > (today - delta)):
-            addresses.add(address)
+# iterate through the address file and build a Postfix map
+for line in RESPONSE:
+    if line.startswith(b'#'):
+        continue  # Skip comment lines
+    address, code, datestamp = line.split(b',')
+    if address == '' or datestamp is None:
+        continue  # Skip blank/empty lines
+    try:
+        DATE = datetime.strptime(datestamp.rstrip().decode('utf-8'),
+                                 '%Y%m%d').date()
+        if DATE > CUTOFF:
+            ADDRESSES.add(address)
+    except ValueError as err:
+        print(err)
+        continue  # Skip malformed lines
 
-for entry in sorted(addresses):
-            mapfile.write(entry + '\t REJECT\n')
-mapfile.close()
+for entry in sorted(ADDRESSES):
+    MAPFILE.write(entry)
+    MAPFILE.write(b'\t REJECT\n')
+MAPFILE.close()
 
 # call postmap on it
-os.system(postmap + ' ' + reject_map_file)
+system(POSTMAP + ' ' + REJECT_MAP_FILE)
 
-sys.exit()
+exit()

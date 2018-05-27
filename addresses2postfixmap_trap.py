@@ -15,18 +15,27 @@ to those addresses that pass through the relays.
 Can parse the community file at:
 https://svn.code.sf.net/p/aper/code/phishing_reply_addresses
 '''
-import commands
-import getopt
+
+from __future__ import absolute_import, print_function
+try:
+    from subprocess import getstatusoutput
+except ImportError:
+    from commands import getstatusoutput
+from getopt import getopt, GetoptError
 import os
 import re
-import urllib
+try:  # Python 3 and newer only
+    from urllib.request import urlopen
+except ImportError:  # Python 2.7 and older
+    from urllib2 import urlopen
 
 
 def output_read(fname):
+    """Open fname, read all the lines and write to list, returned."""
     wx_l = []
-    fd = open(fname, 'r')
-    lines = fd.readlines()
-    fd.close()
+    filed = open(fname, 'r')
+    lines = filed.readlines()
+    filed.close()
 
     for line in lines:
         cur_addr = line.strip().split()[0].lower()
@@ -37,66 +46,69 @@ def output_read(fname):
 
 
 def source_read(fname, verbose):
+    """Read source from fname/URL and write into list, return."""
     wx_l = []
-    addr_match = re.compile('^[\w][\w.-]*@[\w.-]+.(\w){2,4}').match
+    addr_match = re.compile(r'^[\w][\w.-]*@[\w.-]+.(\w){2,4}').match
 
     if fname[:4] == 'http':
-        fd = urllib.urlopen(fname)
-        lines = fd.read()
-        fd.close()
+        filed = urlopen(fname)
+        lines = filed.read()
+        filed.close()
         lines = lines.split('\n')
     else:
-        fd = open(fname, 'r')
-        lines = fd.readlines()
-        fd.close()
+        filed = open(fname, 'r')
+        lines = filed.readlines()
+        filed.close()
 
     for line in lines:
         if not line or line[0] == '#':
             continue
-        new_addr = line.strip().split(',')[0].lower()
-        if new_addr and addr_match(new_addr):
-            wx_l.append(new_addr)
+        new_address = line.strip().split(',')[0].lower()
+        if new_address and addr_match(new_address):
+            wx_l.append(new_address)
         elif verbose:
-            print "Didn't match **%s**" % (new_addr)
+            print("Didn't match **%s**" % (new_address))
 
     return wx_l
 
 
-def regex_write(new_l, output_file, verbose):
-    # An address for quarantining suspect senders; Could just as easily "DISCARD"
+def regex_write(new_l, out_file, verbose):
+    """Write out a phisher header_check regex file for Postfix."""
+    # An address for quarantined suspect senders; Could just as easily "DISCARD"
     #  or "REJECT"
     wx_str = '/(From:|Reply-To:).*%s/    REDIRECT phish-quarantine@ourdomain.edu\n'
     wx_l = []
     if verbose:
-        print "Building header_check file"
+        print("Building header_check file")
     for address in new_l:
         wx_l.append(wx_str % (address))
 
     try:
         if verbose:
-            print "Writing phisher header_check file"
-        fd = open(output_file, 'w')
+            print("Writing phisher header_check file")
+        filed = open(out_file, 'w')
         for line in wx_l:
-            fd.writelines(line)
-        fd.close()
+            filed.writelines(line)
+        filed.close()
         results = True
-    except Exception, err:
-        print "Couldn't write regex!"
-        print err
+    except IOError as err:
+        print("Couldn't write regex!")
+        print(err)
         results = False
 
     return results
 
 
 def addr_merge(dest_l, new_l, verbose):
+    """Merge two address lists together."""
     tmp_l = dest_l[:]
     if verbose:
-        print "Merging %i addresses into %i existing addresses" % (len(new_l), len(dest_l))
+        print("Merging %i addresses into %i existing addresses" % (len(new_l), len(dest_l)))
     for addr in new_l:
         if addr not in tmp_l:
             tmp_l.append(addr)
         elif verbose:
-            print "Already listing %s" % (addr)
+            print("Already listing %s" % (addr))
 
     tmp_l.sort()
 
@@ -104,132 +116,134 @@ def addr_merge(dest_l, new_l, verbose):
 
 
 def addr_write(f_name, addr_l):
+    """Write address out to file."""
     try:
         tmp_name = f_name + '.prev'
         if os.path.isfile(tmp_name):
             os.remove(tmp_name)
         os.rename(f_name, tmp_name)
-        fd = open(f_name, 'w')
+        filed = open(f_name, 'w')
     except OSError:
-        print "Error! Can't open %s for writing." % (f_name)
+        print("Error! Can't open %s for writing." % (f_name))
         return False
 
     for elem in addr_l:
         # An address to trap outbound replies
         outline = '%s\tphish-reply-trap@ourdomain.edu\n' % (elem)
-        fd.writelines(outline)
+        filed.writelines(outline)
 
-    fd.close()
+    filed.close()
 
     return True
 
 
-def main(new_addr, verbose, is_file=False, OUTPUT=None):
-    if not OUTPUT:
-        OUTPUT = '/etc/postfix/virtual_trap'
-    REGEX_OUT = '/etc/postfix/phish_headers.regex'
+def main(new_address, verbose, is_file=False, output=None):  # pylint: disable=too-many-branches
+    """Write address to phishing trap files for Postfix."""
+    if not output:
+        output = '/etc/postfix/virtual_trap'
+    regex_out = '/etc/postfix/phish_headers.regex'
 
-    cur_addr_l = output_read(OUTPUT)
+    cur_addr_l = output_read(output)
     len_1 = len(cur_addr_l)
 
     if is_file:
-        if new_addr[:4] == 'http' or os.path.isfile(new_addr):
-            new_addr_l = source_read(new_addr, verbose)
+        if new_address[:4] == 'http' or os.path.isfile(new_address):
+            new_address_l = source_read(new_address, verbose)
         else:
-            print "Couldn't find input file %s" % (new_addr)
-            os.sys.exit(1)
+            print("Couldn't find input file %s" % (new_address))
+            exit(1)
     else:
-        new_addr_l = [new_addr.split(',')[0]]
+        new_address_l = [new_address.split(',')[0]]
 
-    new_addr_l = addr_merge(cur_addr_l, new_addr_l, verbose)
-    len_2 = len(new_addr_l)
+    new_address_l = addr_merge(cur_addr_l, new_address_l, verbose)
+    len_2 = len(new_address_l)
 
     if len_1 == len_2:
         if verbose:
-            print "No changes to the address list. Exiting now."
+            print("No changes to the address list. Exiting now.")
         return 0
     else:
-        update = addr_write(OUTPUT, new_addr_l)
+        update = addr_write(output, new_address_l)
         if update:
-            status, output = commands.getstatusoutput('/usr/sbin/postmap hash:%s' % (OUTPUT))
+            status, output = getstatusoutput('/usr/sbin/postmap hash:%s' % output)
             if status != 0:
-                print output
+                print(output)
             else:
-                print "Updated %s" % (OUTPUT)
+                print("Updated %s" % output)
             #TAMU mail is hosted in a load-balanced cluster. "config_sync.py" sync's
             # configuration files across the cluster.
-            #status, output = commands.getstatusoutput('/usr/local/sbin/config_sync.py %s' % (OUTPUT))
+            #status, output = getstatusoutput('/usr/local/sbin/config_sync.py %s' % output)
             #if status != 0:
-            #    print output
+            #    print(output)
             #else:
-            #    print "Synched %s" % (OUTPUT)
+            #    print("Synched %s" % output)
 
-            regex_res = regex_write(new_addr_l, REGEX_OUT, verbose)
+            regex_res = regex_write(new_address_l, regex_out, verbose)
             if regex_res:
                 # TAMU mail is hosted in a load-balanced cluster. "config_sync.py" sync's
                 #  configuration files across the cluster.
-                #status, output = commands.getstatusoutput('/usr/local/sbin/config_sync.py %s' % (REGEX_OUT))
+                #status, output = getstatusoutput('/usr/local/sbin/config_sync.py %s' % regex_out)
                 #if status != 0:
-                #    print output
+                #    print(output)
                 #else:
-                #    print "Updated and synched %s" % (REGEX_OUT)
-                print "Updated %s" % (REGEX_OUT)
+                #    print("Updated and synched %s" % regex_out)
+                print("Updated %s" % regex_out)
             else:
-                print "Failed to update %s" % (REGEX_OUT)
+                print("Failed to update %s" % regex_out)
                 return 3
             return 0
         else:
             return 2
 
 if __name__ == '__main__':
-    usage = '''phish_add.py -f <address_file> | -a <address> [ -o <output_file> ] [ -v ]
+    USAGE = '''addresses2postfixmap_trap.py -f <address_file> | -a <address> [ -o <output_file> ] [ -v ]
 
     Updates addresses in a virtual maps file, then synch's the new file between
     mail relays.
     Specify an address file of 'remote' to fetch the current list from SF SVN.'''
 
-    remote_url = 'https://svn.code.sf.net/p/aper/code/phishing_reply_addresses'
+    REMOTE_URL = 'https://svn.code.sf.net/p/aper/code/phishing_reply_addresses'
 
     if len(os.sys.argv) < 2:
-        print usage
-        os.sys.exit(1)
+        print(USAGE)
+        exit(1)
     else:
         try:
-            optlist, args = getopt.getopt(os.sys.argv[1:], 'f:a:o:v', ['file-name', 'address',
-                                                                       'output-file', 'verbose'])
-        except getopt.GetoptError, err:
-            print err
-            print usage
-            os.sys.exit(1)
+            OPTLIST, ARGS = getopt(os.sys.argv[1:], 'f:a:o:v', ['file-name', 'address',
+                                                                'output-file', 'verbose'])
+        except GetoptError as err:
+            print(err)
+            print(USAGE)
+            exit(1)
 
-    output_file = ''
-    input_file = ''
-    new_addr = ''
-    verbose = False
+    OUTPUT_FILE = ''
+    INPUT_FILE = ''
+    NEW_ADDR = ''
+    VERBOSE = False
 
-    for flag, value in optlist:
+    for flag, value in OPTLIST:
         if flag in ('-f', '--file-name'):
-            input_file = value
-            if input_file == 'remote':
-                input_file = remote_url
+            INPUT_FILE = value
+            if INPUT_FILE == 'remote':
+                INPUT_FILE = REMOTE_URL
         if flag in ('-a', '--address'):
-            new_addr = value
+            NEW_ADDR = value
         if flag in ('-o', '--output-file'):
-            output_file = value
+            OUTPUT_FILE = value
         if flag in ('-v', '--verbose'):
-            verbose = True
+            VERBOSE = True
 
-    if not (new_addr or input_file):
-        print usage
-        os.sys.exit(1)
+    if not (NEW_ADDR or INPUT_FILE):
+        print(USAGE)
+        exit(1)
 
-    if new_addr and input_file:
-        print usage
-        os.sys.exit(1)
+    if NEW_ADDR and INPUT_FILE:
+        print(USAGE)
+        exit(1)
 
-    if input_file:
-        res = main(input_file, verbose, is_file=True, OUTPUT=output_file)
+    if INPUT_FILE:
+        RES = main(INPUT_FILE, VERBOSE, is_file=True, output=OUTPUT_FILE)
     else:
-        res = main(new_addr, verbose, is_file=False, OUTPUT=output_file)
+        RES = main(NEW_ADDR, VERBOSE, is_file=False, output=OUTPUT_FILE)
 
-    os.sys.exit(res)
+    exit(RES)
